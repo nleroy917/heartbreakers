@@ -1,0 +1,12 @@
+betterproto==1.2.5
+certifi==2020.6.20
+chardet==3.0.4
+grpclib==0.4.1
+h2==4.0.0
+hpack==4.0.0
+hyperframe==6.0.0
+idna==2.10
+multidict==4.7.6
+requests==2.24.0
+stringcase==1.2.0
+urllib3==1.25.10
