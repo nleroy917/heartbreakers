@@ -12,6 +12,13 @@ class SMSAuthException(BaseException):
 
 
 class TinderSMSAuth(object):
+    '''
+    Tinder SMS authentication client
+    
+    This was directly pulled from https://github.com/jimtje's contributions to the Tinder API. He made all this possible go follow him on GitHub
+
+    Thank you Jim!
+    '''
 
     def __init__(self, email=None):
         self.installid = ''.join(random.choices(string.ascii_uppercase + string.ascii_lowercase + string.digits, k=11))
