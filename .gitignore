@@ -2,3 +2,5 @@ env/
 smstoken.txt
 .vscode/
 .cache-NLeRoy917
+.env
+tests/

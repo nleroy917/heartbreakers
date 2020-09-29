@@ -9,12 +9,24 @@ if __name__ == '__main__':
     tndrAuth = TinderSMSAuth()
     tndr = Tinder(auth=tndrAuth)
     sp = Spotify()
+    sp.check_playlist()
     matches = tndr.get_matches()
     # print(matches)
+    track_list = []
+    i = 1
+    print('Scanning matches...')
     for match in matches:
+        print('{} / {} matches scanned \r'.format(i,len(matches)), end='')
         user = tndr.get_user(match['person']['_id'])['results']
         if 'spotify_theme_track' in user:
             track_id = user['spotify_theme_track']['uri']
-            track = sp.get_song(track_id)
-            print('Adding {}... Thank you {} for the song rec!'.format(track['name'], user['name']))
+            track_list.append(track_id)
+        i+=1
+    print('')
+    print('Adding songs to playlist')
+    sp.create_playlist('heartbreakers', 'a playlist made for you by the ones who probably ghosted you')
+    sp.add_songs(track_list)
+    sp.add_cover_art('../imgs/cover_art.png')
+    print('Done!')
+
             
