@@ -23,6 +23,11 @@ const CoolButton = styled.a`
         cursor: default; 
     }
 
+    &:active {
+        opacity: 0.7;
+        transform: translate(1px,1px);
+    }
+
 `
 
 const Button = ({ href, children }) => {

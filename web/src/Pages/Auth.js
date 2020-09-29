@@ -38,13 +38,14 @@ const PrivacyWrapper = styled.div`
     gap: 5px;
     padding: 5px;
     margin: 10px;
+    &:hover {
+        opacity: 0.6;
+    }
 `
 
 const PrivacyText = styled.a`
     cursor: default;
-    &:hover {
-        opacity: 0.7;
-    }
+
 `
 
 const TinderButton = styled.a`
@@ -58,17 +59,17 @@ const TinderButton = styled.a`
     padding-right: 30px;
     border-radius: 30px;
     border: white solid 1px;
-    transition: ease-in-out 0.1s;
+    transition: ease-in-out 0.05s;
     text-decoration: none;
-    color: white;
+    color: ${props => props.token ? '#fd5465' : 'white'};
 
     &:hover {
         background: white;
-        border: solid 1px #ad9bff;
-        color: #ad9bff;
+        border: solid 1px #fd5465;
+        color: #fd5465;
         cursor: default; 
     }
-    background: #fd5465;
+    background: ${props => props.token ? 'white' : '#fd5465'};
 `
 
 const SpotifyButton = styled.a`
@@ -81,15 +82,15 @@ const SpotifyButton = styled.a`
     padding-left: 30px;
     padding-right: 30px;
     border-radius: 30px;
-    border: white solid 1px;
-    transition: ease-in-out 0.1s;
+    border: ${props => props.token ? '#1ad860 solid 1px' : 'white solid 1px'};
+    transition: ease-in-out 0.05s;
     text-decoration: none;
-    color: ${props => props.token ? '#ad9bff' : 'white'};
+    color: ${props => props.token ? '#1ad860' : 'white'};
 
     &:hover {
         background: white;
-        border: solid 1px #ad9bff;
-        color: #ad9bff;
+        border: solid 1px #1ad860;
+        color: #1ad860;
         cursor: default; 
     }
     background: ${props => props.token ? 'white' : '#1ad860'};
@@ -104,6 +105,15 @@ const LogOutWrapper = styled.div`
     padding: 10px;
     font-size: 12px;
     color: blue;
+`
+
+const BackLink = styled.a`
+    cursor: default;
+    margin-top: 10px;
+    color: white;
+    &:hover {
+        opacity: 0.6;
+    }
 `
 
 const LogOutLink = styled.a`
@@ -218,11 +228,13 @@ const Auth = ({ }) => {
             <AuthTitle>
                 Lets find those heartbreakers...
             </AuthTitle>
-                <TinderButton>
+                <TinderButton
+                  href="/tinder-auth"
+                >
                     Login to Tinder
                 </TinderButton>
                 <SpotifyButton
-                    href={sp_authorize_url}
+                    href={spotifyAccessToken ? null : sp_authorize_url}
                     token={spotifyAccessToken}
                 >
                     {
@@ -233,9 +245,9 @@ const Auth = ({ }) => {
                         
                     }
                 </SpotifyButton>
-                <Button href="/">
-                    Nevermind ... 
-                </Button>
+                    <BackLink href="/">
+                        Back
+                    </BackLink>
                 <LogOutWrapper>
                 {
                  spotifyAccessToken ? 

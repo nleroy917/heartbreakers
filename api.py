@@ -31,5 +31,53 @@ def api_base():
     }
     return jsonify(return_package)
 
+@app.route('/auth/tinder/sms', methods=['POST'])
+def tinder_sms_auth_send():
+    data = request.get_json()['data']
+    phone = data['phone']
+    tndrAuth = TinderSMSAuth(
+        phone=phone
+    )
+    tndrAuth.send_sms_verification()
+    return_package = {
+        'message': 'sms optcode sent'
+    }
+    return jsonify(return_package)
+
+@app.route('/auth/tinder/sms/validate', methods=['POST'])
+def tinder_sms_auth_validate():
+    data = request.get_json()['data']
+    optcode = data['optcode']
+    phone = data['optcode']
+    tndrAuth = TinderSMSAuth(
+        phone=phone,
+    )
+    tndrAuth.validate_phone_otp(optcode)
+    return_package = {
+        'message': None,
+        'email_required': None,
+    }
+    if tndrAuth.authtoken:
+        return_package['message'] = 'Successfully validated'
+        return_package['email_required'] = 'false'
+        return_package['access_token'] = tndrAuth.authtoken
+        return jsonify(return_package)
+    else:
+        return_package['message'] = 'Successfully validated'
+        return_package['email_required'] = 'true'
+        return jsonify(return_package)
+
+@app.route('/auth/tinder/email/validate', methods=['POST'])
+def tinder_email_auth_validate():
+    data = request.get_json()['data']
+    optcode = data['optcode']
+    phone = data['optcode']
+    tndrAuth = TinderSMSAuth(
+        phone=phone,
+    )
+    resp = tndrAuth.validate_email_otp(optcode)
+
+        
+
 if __name__ == '__main__':
 	app.run()

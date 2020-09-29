@@ -8,6 +8,7 @@ import {
 
 import Landing from './Pages/Landing';
 import Auth from './Pages/Auth';
+import TinderAuth from './Pages/TinderLogin';
 
 const App = () => {
   return (
@@ -17,6 +18,7 @@ const App = () => {
         <Switch>
           <Route path="/" exact component={Landing}></Route>
           <Route path="/login" component={Auth}></Route>
+          <Route path="/tinder-auth" component={TinderAuth}></Route>
         </Switch>
       </div>
       </Router>
