@@ -18,8 +18,8 @@ const CoolButton = styled.a`
 
     &:hover {
         background: white;
-        border: solid 1px #cdc2fe;
-        color: #cdc2fe;
+        border: solid 1px #ad9bff;
+        color: #ad9bff;
         cursor: default; 
     }
 

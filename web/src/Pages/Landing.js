@@ -22,9 +22,12 @@ const VerticalCenter = styled.div`
     justify-content: center;
     flex-wrap: wrap;
     align-items: flex-start;
-    height: 80vh;
+    height: 90vh;
     width: 100%;
     text-align: left;
+    @media (max-width: 768px) {
+		align-items: center;
+    }
 `
 
 const PageTitle = styled.p`
@@ -38,6 +41,15 @@ const PageTitle = styled.p`
 
 const PageText = styled.h4`
 
+`
+
+const Footer = styled.footer`
+    opacity: 0.8;
+    font-size: 12px;
+    @media (max-width: 768px) {
+        text-align: center;
+        font-size: 10px;
+    }
 `
 
 const BouncingHeart = styled.img`
@@ -78,6 +90,9 @@ const Landing = () => {
             </div>
           </VerticalCenter>
           </Wrapper>
+          <Footer>
+                Created by Nathan LeRoy
+          </Footer>
         </Layout>
         </>
     )
