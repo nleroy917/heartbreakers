@@ -1,14 +1,15 @@
 import sys
 import requests
 
+class TinderException(BaseException):
+    pass
+
 class Tinder():
     '''
     Python class to interface the Tinder API
     '''
     _session = requests.Session()
     _SLEEP_MIN = 0.2  # Enforce minimum wait time between API calls (seconds)
-    class TinderException(BaseException):
-        pass
 
     def __init__(self,auth):
         '''
@@ -17,7 +18,7 @@ class Tinder():
         '''
         if not auth.authtoken:
             print('Please authenticate first!')
-            raise TinderException()
+            raise TinderException
             sys.exit(1)
 
         self._token = auth.authtoken

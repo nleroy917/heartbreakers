@@ -102,6 +102,10 @@ const TinderAuth = () => {
     const [SMSoptCode, setSMSoptCode] = useState(null);
     const [SMSVerified, setSMSVerified] = useState(false);
     const [seconds, setSeconds] = useState(null);
+    const [installid, setinstallid] = useState(null);
+    const [funnelid, setfunnelid] = useState(null);
+    const [appsessionid, setappsessionid] = useState(null);
+    const [deviceid, setdeviceid] = useState(null);
     const [accessToken, setAccessToken] = useState(null);
     const [emailRequired, setEmailRequired] = useState(false);
     const [email, setEmail] = useState(null);
@@ -112,8 +116,8 @@ const TinderAuth = () => {
 
     useEffect(()=>{
         // console.log(phone)
-        console.log(SMSoptCode)
-    },[SMSoptCode])
+        // console.log(SMSoptCode)
+    },[])
 
     const sendSMSAuth = async () => {
         let data = {
@@ -121,8 +125,13 @@ const TinderAuth = () => {
         }
         let res = await axios.post(`${API_BASE}/auth/tinder/sms`, {data: data})
         if(res.status === 200){
+            let data = res.data
             setSMSoptSent(true)
             setSeconds(data.seconds)
+            setinstallid(data.installid)
+            setfunnelid(data.funnelid)
+            setappsessionid(data.appsessionid)
+            setdeviceid(data.deviceid)
         }
     }
 
@@ -130,7 +139,11 @@ const TinderAuth = () => {
         let data = {
             optcode: SMSoptCode,
             phone: phone,
-            seconds: seconds
+            seconds: seconds,
+            installid: installid,
+            funnelid: funnelid,
+            appsessionid: appsessionid,
+            deviceid: deviceid
         }
         let res = await axios.post(`${API_BASE}/auth/tinder/sms/validate`, {data: data})
         if(res.status === 200){

@@ -20,23 +20,57 @@ class TinderSMSAuth(object):
     Thank you Jim!
     '''
 
-    def __init__(self, email=None, phone=None, token=None, seconds=None):
-        self.installid = ''.join(random.choices(string.ascii_uppercase + string.ascii_lowercase + string.digits, k=11))
+    def __init__(self, 
+        email=None, 
+        phone=None, 
+        token=None, 
+        seconds=None,
+        installid=None,
+        funnelid=None,
+        appsessionid=None,
+        deviceid=None
+    ):
+        if installid:
+            self.installid = installid
+        else:
+            self.installid = ''.join(random.choices(string.ascii_uppercase + string.ascii_lowercase + string.digits, k=11))
+
+        if funnelid:
+            self.funnelid = funnelid
+        else:
+            self.funnelid = str(uuid.uuid4()) 
+
+        if appsessionid:
+            self.appsessionid = appsessionid
+        else:
+            self.appsessionid = str(uuid.uuid4())
+
+        if deviceid:
+            self.deviceid = deviceid
+        else:
+            self.deviceid = secrets.token_hex(8)
+
+        if seconds:
+            self.seconds = seconds
+        else:
+            self.seconds = random.uniform(100, 250)
+
         self.session = requests.Session()
         self.session.headers.update({"user-agent": "Tinder Android Version 11.23.0"})
         self.url = "https://api.gotinder.com"
-        self.funnelid = str(uuid.uuid4())
-        self.appsessionid = str(uuid.uuid4())
-        self.deviceid = secrets.token_hex(8)
         self.authtoken = token
         self.refreshtoken = None
         self.userid = None
         self.email = email
         self.phone = phone
         self.email_required = False
-        self.seconds = seconds
 
     def send_sms_verification(self):
+        print(self.seconds, flush=True)
+        print(self.installid, flush=True)
+        print(self.funnelid, flush=True)
+        print(self.appsessionid, flush=True)
+        print(self.deviceid, flush=True)
         payload = {
                 "device_id": self.installid,
                 "experiments": ["default_login_token", "tinder_u_verification_method", "tinder_rules",
@@ -60,11 +94,18 @@ class TinderSMSAuth(object):
         response = AuthGatewayResponse().parse(r.content).to_dict()
     
     def validate_phone_otp(self, optcode):
+        print(self.seconds, flush=True)
+        print(self.installid, flush=True)
+        print(self.funnelid, flush=True)
+        print(self.appsessionid, flush=True)
+        print(self.deviceid, flush=True)
         otpresponse = optcode
         resp = PhoneOtp(phone=self.phone, otp=otpresponse)
         messageresponse = bytes(AuthGatewayRequest(phone_otp=resp))
+        # print(format(self.seconds + random.uniform(30, 90), ".3f"), flush=True)
         self.session.headers.update({"app-session-time-elapsed": format(self.seconds + random.uniform(30, 90), ".3f")})
         r = self.session.post(self.url + "/v3/auth/login", data=messageresponse)
+        print(r.text,flush=True)
         response = AuthGatewayResponse().parse(r.content).to_dict()
         if "validateEmailOtpState" in response.keys():
             self.email_required = True

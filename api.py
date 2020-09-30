@@ -41,9 +41,14 @@ def tinder_sms_auth_send():
             phone=phone,
         )
         tndrAuth.send_sms_verification()
+
     return_package = {
         'message': 'sms optcode sent',
-        'seconds': tndrAuth.seconds
+        'seconds': tndrAuth.seconds,
+        'installid': tndrAuth.installid,
+        'funnelid': tndrAuth.funnelid,
+        'appsessionid': tndrAuth.appsessionid,
+        'deviceid': tndrAuth.deviceid
     }
     return jsonify(return_package)
 
@@ -53,9 +58,18 @@ def tinder_sms_auth_validate():
     optcode = data['optcode']
     phone = data['phone']
     seconds = data['seconds']
+    installid = data['installid']
+    funnelid = data['funnelid']
+    appsessionid = data['appsessionid']
+    deviceid = data['deviceid']
+
     tndrAuth = TinderSMSAuth(
         phone=phone,
-        seconds=seconds
+        seconds=seconds,
+        installid=installid,
+        funnelid=funnelid,
+        appsessionid=appsessionid,
+        deviceid=deviceid, 
     )
     tndrAuth.validate_phone_otp(optcode)
     return_package = {
