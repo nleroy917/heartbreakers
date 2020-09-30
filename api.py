@@ -35,12 +35,15 @@ def api_base():
 def tinder_sms_auth_send():
     data = request.get_json()['data']
     phone = data['phone']
-    tndrAuth = TinderSMSAuth(
-        phone=phone
-    )
-    tndrAuth.send_sms_verification()
+    
+    if phone:
+        tndrAuth = TinderSMSAuth(
+            phone=phone,
+        )
+        tndrAuth.send_sms_verification()
     return_package = {
-        'message': 'sms optcode sent'
+        'message': 'sms optcode sent',
+        'seconds': tndrAuth.seconds
     }
     return jsonify(return_package)
 
@@ -48,9 +51,11 @@ def tinder_sms_auth_send():
 def tinder_sms_auth_validate():
     data = request.get_json()['data']
     optcode = data['optcode']
-    phone = data['optcode']
+    phone = data['phone']
+    seconds = data['seconds']
     tndrAuth = TinderSMSAuth(
         phone=phone,
+        seconds=seconds
     )
     tndrAuth.validate_phone_otp(optcode)
     return_package = {

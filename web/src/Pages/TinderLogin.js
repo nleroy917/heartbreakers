@@ -1,8 +1,10 @@
 import React, {useEffect, useState} from 'react';
+import { useHistory } from "react-router-dom";
 import styled from 'styled-components';
 import Layout from '../Components/Layout';
 import Button from '../Components/Button';
-import ReactCodeInput from 'react-verification-code-input';
+import OTPInput, { ResendOTP } from 'otp-input-react';
+
 
 import axios from 'axios';
 
@@ -68,28 +70,78 @@ const PhoneNumberInput = styled.input`
     }
 `
 
-const OPTCodeValidator = styled(ReactCodeInput)`
-    font-family: inherit;
+const EmailInput = styled.input`
+    text-align: center;
+    background-color: white;
+    border: solid white 1px;
+    padding: 10px;
+    padding-left: 20px;
+    padding-right: 20px;
+    height: 40px;
+    width: 200px;
+    font-size: 18px;
+    box-shadow: rgba(0, 0, 0, 0.6) 3px 3px;
+    transition: ease-in-out 0.1s;
+    margin: 20px;
+    && {
+	@media (max-width: 768px) {
+        width: 70%
+    }
+    }
+    
+    &:focus {
+        outline: none;
+        box-shadow: rgba(0, 0, 0, 0.6) 6px 6px;
+    }
 `
 
-
 const TinderAuth = () => {
+
     const [phone, setPhone] = useState('');
     const [SMSoptSent, setSMSoptSent] = useState(false);
     const [SMSoptCode, setSMSoptCode] = useState(null);
+    const [SMSVerified, setSMSVerified] = useState(false);
+    const [seconds, setSeconds] = useState(null);
+    const [accessToken, setAccessToken] = useState(null);
+    const [emailRequired, setEmailRequired] = useState(false);
+    const [email, setEmail] = useState(null);
+    const [emailoptCode, setEmailoptCode] = useState(null);
     const [API_BASE, set_API_BASE] = useState(process.env.REACT_APP_API_BASE)
+
+    let history = useHistory();
+
     useEffect(()=>{
         // console.log(phone)
-    },[])
+        console.log(SMSoptCode)
+    },[SMSoptCode])
 
     const sendSMSAuth = async () => {
-
         let data = {
             phone: phone
         }
         let res = await axios.post(`${API_BASE}/auth/tinder/sms`, {data: data})
         if(res.status === 200){
             setSMSoptSent(true)
+            setSeconds(data.seconds)
+        }
+    }
+
+    const verifySMSoptCode = async () => {
+        let data = {
+            optcode: SMSoptCode,
+            phone: phone,
+            seconds: seconds
+        }
+        let res = await axios.post(`${API_BASE}/auth/tinder/sms/validate`, {data: data})
+        if(res.status === 200){
+            setSMSVerified(true);
+            let data = res.data
+            if(!data.email_required){
+                setAccessToken(data.access_token)
+                history.push(`/login?tinder_access_token=${data.access_token}`)
+            } else {
+                setEmailRequired(true)
+            }
         }
     }
 
@@ -103,15 +155,48 @@ const TinderAuth = () => {
             </AuthTitle>
             <br></br>
             {
-                SMSoptSent ?  
+                SMSoptSent ?  SMSVerified && emailRequired ? 
+                <>
+                  <AuthFormText>
+                      Enter email:
+                  </AuthFormText>
+                  <EmailInput
+                      placeholder="simp@lonely.com"
+                      onChange={(e) => {setEmail(e.target.value)}}
+                      value={email}
+                  />
+                  <AuthFormText>
+                      Enter code received in email:
+                  </AuthFormText>
+                  <OTPInput
+                    value={emailoptCode}
+                    onChange={setEmailoptCode}
+                    autoFocus
+                    OTPLength={6}
+                    otpType="number"
+                    style={{outline: 'none'}}
+                  /> 
+                </>
+                :
                 <>
                   <AuthFormText>
                     Enter Code Received:
                   </AuthFormText>
                   <br></br>
-                  <OPTCodeValidator
-                    onChange={(e) => {setSMSoptCode(e)}}
+                  <OTPInput
+                    value={SMSoptCode}
+                    onChange={setSMSoptCode}
+                    autoFocus
+                    OTPLength={6}
+                    otpType="number"
+                    style={{outline: 'none'}}
                   />
+                  <br></br>
+                  <div onClick={() => {verifySMSoptCode()}}>
+                  <Button>
+                      Verify
+                  </Button>
+                  </div>
                 </>
                 : 
                 <>

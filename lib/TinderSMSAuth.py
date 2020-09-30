@@ -20,7 +20,7 @@ class TinderSMSAuth(object):
     Thank you Jim!
     '''
 
-    def __init__(self, email=None, phone=None, token=None):
+    def __init__(self, email=None, phone=None, token=None, seconds=None):
         self.installid = ''.join(random.choices(string.ascii_uppercase + string.ascii_lowercase + string.digits, k=11))
         self.session = requests.Session()
         self.session.headers.update({"user-agent": "Tinder Android Version 11.23.0"})
@@ -34,6 +34,7 @@ class TinderSMSAuth(object):
         self.email = email
         self.phone = phone
         self.email_required = False
+        self.seconds = seconds
 
     def send_sms_verification(self):
         payload = {
@@ -44,7 +45,6 @@ class TinderSMSAuth(object):
         self.session.post(self.url + "/v2/buckets", json=payload)
         phonenumber = self.phone
         messageout = AuthGatewayRequest(Phone(phone=phonenumber))
-        seconds = random.uniform(100, 250)
         headers = {
                 'tinder-version': "11.23.0", 'install-id': self.installid,
                 'user-agent': "Tinder Android Version 11.23.0", 'connection': "close",
@@ -52,7 +52,7 @@ class TinderSMSAuth(object):
                 'accept-encoding': "gzip, deflate", 'appsflyer-id': "1600144077225-7971032049730563486",
                 'platform': "android", 'app-version': "3994", 'os-version': "25", 'app-session-id': self.appsessionid,
                 'x-supported-image-formats': "webp", 'funnel-session-id': self.funnelid,
-                'app-session-time-elapsed': format(seconds, ".3f"), 'accept-language': "en-US",
+                'app-session-time-elapsed': format(self.seconds, ".3f"), 'accept-language': "en-US",
                 'content-type': "application/x-protobuf"
         }
         self.session.headers.update(headers)
@@ -60,25 +60,20 @@ class TinderSMSAuth(object):
         response = AuthGatewayResponse().parse(r.content).to_dict()
     
     def validate_phone_otp(self, optcode):
-        if "validatePhoneOtpState" in response.keys() and response["validatePhoneOtpState"]["smsSent"]:
-            otpresponse = optcode
-            resp = PhoneOtp(phone=phonenumber, otp=otpresponse)
-            messageresponse = bytes(AuthGatewayRequest(phone_otp=resp))
-            self.session.headers.update({"app-session-time-elapsed": format(seconds + random.uniform(30, 90), ".3f")})
-            r = self.session.post(self.url + "/v3/auth/login", data=messageresponse)
-            response = AuthGatewayResponse().parse(r.content).to_dict()
-
-            if "validateEmailOtpState" in response.keys():
-                self.email_required = True
-                refreshtoken = response["validateEmailOtpState"]["refreshToken"]
-                return None
-
-            if "loginResult" in response.keys() and "authToken" in response["loginResult"].keys():
-                self.refreshtoken = response["loginResult"]["refreshToken"]
-                self.authtoken = response["loginResult"]["authToken"]
-                self.session.headers.update({"X-Auth-Token": self.authtoken})
-            else:
-                raise SMSAuthException
+        otpresponse = optcode
+        resp = PhoneOtp(phone=self.phone, otp=otpresponse)
+        messageresponse = bytes(AuthGatewayRequest(phone_otp=resp))
+        self.session.headers.update({"app-session-time-elapsed": format(self.seconds + random.uniform(30, 90), ".3f")})
+        r = self.session.post(self.url + "/v3/auth/login", data=messageresponse)
+        response = AuthGatewayResponse().parse(r.content).to_dict()
+        if "validateEmailOtpState" in response.keys():
+            self.email_required = True
+            refreshtoken = response["validateEmailOtpState"]["refreshToken"]
+            return None
+        if "loginResult" in response.keys() and "authToken" in response["loginResult"].keys():
+            self.refreshtoken = response["loginResult"]["refreshToken"]
+            self.authtoken = response["loginResult"]["authToken"]
+            self.session.headers.update({"X-Auth-Token": self.authtoken})
         else:
             raise SMSAuthException
     
