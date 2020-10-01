@@ -5,10 +5,12 @@ import Layout from '../Components/Layout';
 import Button from '../Components/Button';
 import OTPInput, { ResendOTP } from 'otp-input-react';
 
-
+import Cookies from 'universal-cookie';
 import axios from 'axios';
 
 import tinder_logo from '../images/tinder-logo.png';
+
+const cookies = new Cookies();
 
 const VerticalCenter = styled.div`
     display: flex;
@@ -106,6 +108,7 @@ const TinderAuth = () => {
     const [funnelid, setfunnelid] = useState(null);
     const [appsessionid, setappsessionid] = useState(null);
     const [deviceid, setdeviceid] = useState(null);
+    const [refreshToken, setRefreshToken] = useState(null);
     const [accessToken, setAccessToken] = useState(null);
     const [emailRequired, setEmailRequired] = useState(false);
     const [email, setEmail] = useState(null);
@@ -151,10 +154,43 @@ const TinderAuth = () => {
             let data = res.data
             if(!data.email_required){
                 setAccessToken(data.access_token)
+                setSeconds(data.seconds)
+                setinstallid(data.installid)
+                setfunnelid(data.funnelid)
+                setappsessionid(data.appsessionid)
+                setdeviceid(data.deviceid)
+                setRefreshToken(data.refresh_token)
                 history.push(`/login?tinder_access_token=${data.access_token}`)
             } else {
                 setEmailRequired(true)
+                setSeconds(data.seconds)
+                setinstallid(data.installid)
+                setfunnelid(data.funnelid)
+                setappsessionid(data.appsessionid)
+                setdeviceid(data.deviceid)
+                setRefreshToken(data.refresh_token)
             }
+        }
+    }
+
+    const verifyEmailoptCode = async () => {
+        let data = {
+            optcode: emailoptCode,
+            phone: phone,
+            seconds: seconds,
+            installid: installid,
+            funnelid: funnelid,
+            appsessionid: appsessionid,
+            deviceid: deviceid,
+            email: email,
+            refresh_token: refreshToken,
+        }
+        let res = await axios.post(`${API_BASE}/auth/tinder/email/validate`, {data: data})
+        if (res.status === 200){
+            let data = res.data
+            setAccessToken(data.access_token)
+            cookies.set('tinderAccessToken',data.access_token)
+            history.push(`/login`)
         }
     }
 
@@ -181,6 +217,7 @@ const TinderAuth = () => {
                   <AuthFormText>
                       Enter code received in email:
                   </AuthFormText>
+                  <br></br>
                   <OTPInput
                     value={emailoptCode}
                     onChange={setEmailoptCode}
@@ -188,7 +225,12 @@ const TinderAuth = () => {
                     OTPLength={6}
                     otpType="number"
                     style={{outline: 'none'}}
-                  /> 
+                  />
+                  <div onClick={() => {verifyEmailoptCode()}}>
+                  <Button>
+                      Verify
+                  </Button>
+                  </div>
                 </>
                 :
                 <>

@@ -58,7 +58,7 @@ const TinderButton = styled.a`
     padding-left: 30px;
     padding-right: 30px;
     border-radius: 30px;
-    border: white solid 1px;
+    border: ${props => props.token ? '#fd5465 solid 1px' : 'white solid 1px'};
     transition: ease-in-out 0.05s;
     text-decoration: none;
     color: ${props => props.token ? '#fd5465' : 'white'};
@@ -229,9 +229,15 @@ const Auth = ({ }) => {
                 Lets find those heartbreakers...
             </AuthTitle>
                 <TinderButton
-                  href="/tinder-auth"
+                  href={tinderAccessToken ? null : "/tinder-auth"}
+                  token={tinderAccessToken}
                 >
-                    Login to Tinder
+                {
+                    tinderAccessToken ?
+                    <>Tinder Connected!</>
+                    :
+                    <>Login to Tinder</>
+                }
                 </TinderButton>
                 <SpotifyButton
                     href={spotifyAccessToken ? null : sp_authorize_url}
@@ -245,6 +251,16 @@ const Auth = ({ }) => {
                         
                     }
                 </SpotifyButton>
+                {
+                    spotifyAccessToken && tinderAccessToken ?
+                    <Button
+                      href="/generate"
+                    >
+                        Go!
+                    </Button>
+                    :
+                    ''
+                }
                     <BackLink href="/">
                         Back
                     </BackLink>
@@ -262,7 +278,7 @@ const Auth = ({ }) => {
                 {
                  tinderAccessToken ? 
                   <LogOutLink
-                    onClick={clearSpotifyCookies}
+                    onClick={clearTinderCookies}
                   >
                     Log Out of Tinder
                   </LogOutLink>
@@ -270,13 +286,12 @@ const Auth = ({ }) => {
                   ''
                 }
                 </LogOutWrapper>
-
                 <PrivacyWrapper>
                 <InfoIcon />
                 <PrivacyText>
                     <>Privacy Info</>
                 </PrivacyText>
-                </PrivacyWrapper>          
+                </PrivacyWrapper>
             </VerticalCenter>
           </Layout>
         </>
