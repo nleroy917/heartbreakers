@@ -8,7 +8,7 @@ class Spotify():
     Python class to interface the Spotify API - makes use of spotipy
     '''
 
-    def __init__(self):
+    def __init__(self, access_token):
         '''
         Must set client_id and client secret as environment variables:
             SPOTIPY_CLIENT_ID=client_id_here
@@ -16,8 +16,7 @@ class Spotify():
             SPOTIPY_CLIENT_USERNAME=client_username_here # This is actually an id not spotify display name
             SPOTIPY_REDIRECT_URI=http://localhost:8080 # Make url is set in app you created to get your ID and SECRET
         '''
-        self._scope = "user-library-read user-library-modify playlist-modify-public ugc-image-upload"
-        self._sp = spotipy.Spotify(auth_manager=SpotifyOAuth(scope=self._scope))
+        self._sp = spotipy.Spotify(auth=access_token)
         self._user = self._sp.current_user()['id']
         self._playlist_id = None
     
@@ -68,3 +67,15 @@ class Spotify():
         with open(img_link, 'rb') as image_file:
             encoded_string = base64.b64encode(image_file.read())
         self._sp.playlist_upload_cover_image(self._playlist_id, encoded_string)
+    
+    def get_tracks(self, track_ids):
+        '''
+        Get a list of track objects for a list of track id's
+        '''
+        if len(track_ids) > 50:
+            tracks1 = self._sp.tracks(track_ids[:50])
+            tracks2 = self._sp.tracks(track_ids[50:])
+            tracks = tracks1 + tracks2
+        else:
+            tracks = self._sp.tracks(track_ids)
+        return tracks

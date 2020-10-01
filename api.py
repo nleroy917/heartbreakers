@@ -135,6 +135,34 @@ def get_tinder_matches():
         'matches': matches
     }
     return jsonify(return_package)
+
+@app.route('/tinder/user/<id>', methods=['GET'])
+def get_tinder_user(id):
+    access_token = request.headers['access_token']
+    tndrAuth = TinderSMSAuth(token=access_token)
+    tndr = Tinder(auth=tndrAuth)
+    user = tndr.get_user(id)['results']
+    return_package = {
+        'message': 'User {} returned'.format(id),
+        'user': user
+    }
+    return jsonify(return_package)
+
+@app.route('/spotify/tracks', methods=['POST'])
+def get_spotify_tracks():
+    # print(request.headers, flush=True)
+    access_token = request.headers['access_token']
+    data = request.get_json()['data']
+    track_ids = data['track_ids']
+    print(track_ids)
+    sp = Spotify(access_token)
+    tracks = sp.get_tracks(track_ids)
+    return_package = {
+        'message': 'tracks recieved',
+        'tracks': tracks
+    }
+    return jsonify(tracks)
+
         
 
 if __name__ == '__main__':

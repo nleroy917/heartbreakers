@@ -1,13 +1,16 @@
 import axios from 'axios';
 
 class Tinder {
-    constructor(acessToken) {
+    constructor(accessToken) {
+        this.base = process.env.REACT_APP_API_BASE
         this.accessToken = accessToken
-        this.base = 'https://api.gotinder.com'
     }
     getUser = async (id) => {
-        let uri = `${this.base}/user/${id}?locale=en`
-        let res = axios.get(uri)
+        let data = {
+            access_token: this.accessToken
+        }
+        let uri = `${this.base}/tinder/user/${id}`
+        let res = await axios.get(uri, {data: data})
         if (res.status === 200){
             let data = res.data
             return data
