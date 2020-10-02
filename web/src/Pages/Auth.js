@@ -146,7 +146,7 @@ const Auth = ({ }) => {
     },[])
 
     const fetchSpotifyName = async (accessToken) => {
-        console.log('here')
+
         let hdrs = {
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${accessToken}`
@@ -160,7 +160,7 @@ const Auth = ({ }) => {
             cookies.set('userName', data.display_name, {path: '/'})
             cookies.set('userID', data.id, {path: '/'})
             cookies.set('user', data, {path: '/'})
-            console.log(data)
+            // console.log(data)
             setSpUser(data)
         }
     }

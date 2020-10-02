@@ -44,9 +44,14 @@ const PageText = styled.h4`
 `
 
 const Footer = styled.footer`
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
     opacity: 0.8;
     font-size: 12px;
     @media (max-width: 768px) {
+        justify-content: space-evenly;
         text-align: center;
         font-size: 10px;
     }
@@ -79,6 +84,7 @@ const Landing = () => {
             <PageText>
                 a playlist (involuntarily) created for u by the ones who probably ghosted u.
             </PageText>
+            <br></br>
             <Button
                 href="/login"
             >
@@ -93,7 +99,12 @@ const Landing = () => {
           </VerticalCenter>
           </Wrapper>
           <Footer>
-                Created by Nathan LeRoy
+            <div>
+              Created by Nathan LeRoy
+            </div>
+            <div>
+                Version: 0.1
+            </div>
           </Footer>
         </Layout>
         </>

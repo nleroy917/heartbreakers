@@ -264,6 +264,7 @@ const TinderAuth = () => {
                     value={phone}
                   />
                   <div onClick={() => { sendSMSAuth()}}>
+                  <br></br>
                   <Button>
                       Send Code
                   </Button>

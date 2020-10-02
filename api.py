@@ -154,7 +154,7 @@ def get_spotify_tracks():
     access_token = request.headers['access_token']
     data = request.get_json()['data']
     track_ids = data['track_ids']
-    print(track_ids)
+
     sp = Spotify(access_token)
     tracks = sp.get_tracks(track_ids)
     return_package = {
@@ -162,6 +162,25 @@ def get_spotify_tracks():
         'tracks': tracks
     }
     return jsonify(tracks)
+
+@app.route('/spotify/playlists', methods=['PUT'])
+def make_playlist():
+
+    access_token = request.headers['access_token']
+    data = request.get_json()['data']
+    track_ids = data['track_ids']
+
+    sp = Spotify(access_token)
+    playlist_name = 'heartbreakers'
+    href = sp.create_playlist(playlist_name,'a playlist made for u by the ones who probably ghosted you')
+    sp.add_songs(track_ids)
+    sp.add_cover_art('imgs/cover_art.png')
+
+    return_package = {
+        'message': 'playlist {} successfully created'.format(playlist_name),
+        'link': href
+    }
+    return jsonify(return_package)
 
         
 

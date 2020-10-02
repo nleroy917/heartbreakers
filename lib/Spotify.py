@@ -49,6 +49,7 @@ class Spotify():
         '''
         result = self._sp.user_playlist_create(self._user,name,description=desc)
         self._playlist_id = result['id']
+        return result['external_urls']['spotify']
     
     def add_songs(self, track_list):
         '''
