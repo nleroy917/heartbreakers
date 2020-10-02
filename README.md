@@ -15,12 +15,19 @@ The Tinder API is **not** public. Exposed endpoints, authentication flows, and A
 **BIG** shoutout to Jim Zhou and [his pull request](https://github.com/fbessez/Tinder/pull/117) that allowed this authentication flow to exist on my server. If you would like to see exactly how the SMS authentication flow is handled server-side, see [this code here](https://github.com/NLeRoy917/heartbreakers/blob/master/lib/TinderSMSAuth.py)
 
 ## Development
+The application isnt dockerized, but you can simply run the api and the UI in separate terminals.
+
+In the root of the project, you can create a new virtual env with python: `python -m venv env`. Then install all requirements using `pip install -r requirements.txt`. Afterwards, run the shell script:
+
+### `sh run.sh`
+
+to start the app/api.
 
 In the `web/` directory, you can run:
 
 ### `npm start`
 
-Runs the app in the development mode.<br />
+Runs the UI in the development mode.<br />
 Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
 
 The page will reload if you make edits.<br />
