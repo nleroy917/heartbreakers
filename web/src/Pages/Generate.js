@@ -145,18 +145,18 @@ const Generate = () => {
                   Your Heartbreakers:
                 </SetListTitle>
                 { 
-                    songs.map((song,i) => {
-                        return(
-                            <>
-                              {
-                                  <SongEntry>
-                                    {`${song.name} by ${song.artists[0].name} - Thank you ${users[i].name}`}
-                                  </SongEntry>
-                              }
-                            </>
-                          )
-                        }
+                  songs.map((song,i) => {
+                    return(
+                        <>
+                          {
+                              <SongEntry>
+                                {`${song.name} by ${song.artists[0].name} - Thank you ${users[i].name}`}
+                              </SongEntry>
+                          }
+                        </>
                       )
+                    }
+                  )
                 }
             </>
             }
