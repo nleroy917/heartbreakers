@@ -2,9 +2,6 @@ import React from 'react';
 import styled from 'styled-components';
 
 const CoolButton = styled.a`
-    -webkit-appearance: button;
-    -moz-appearance: button;
-    appearance: button;
     text-decoration: none;
     margin: 10px;
     padding: 10px;

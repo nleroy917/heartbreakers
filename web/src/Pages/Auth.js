@@ -49,9 +49,6 @@ const PrivacyText = styled.a`
 `
 
 const TinderButton = styled.a`
-    -webkit-appearance: button;
-    -moz-appearance: button;
-    appearance: button;
     text-decoration: none;
     margin: 10px;
     padding: 10px;
@@ -73,9 +70,6 @@ const TinderButton = styled.a`
 `
 
 const SpotifyButton = styled.a`
-    -webkit-appearance: button;
-    -moz-appearance: button;
-    appearance: button;
     text-decoration: none;
     margin: 10px;
     padding: 10px;

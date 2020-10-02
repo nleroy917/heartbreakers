@@ -84,8 +84,10 @@ const Landing = () => {
             >
                 Lets Go
             </Button>
-            <Button>
-                About
+            <Button
+                href="https://github.com/NLeRoy917/heartbreakers"
+            >
+                GitHub
             </Button>
             </div>
           </VerticalCenter>
