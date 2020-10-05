@@ -4,6 +4,7 @@ import Cookies from 'universal-cookie';
 
 import Layout from '../Components/Layout';
 import Button from '../Components/Button';
+import PrivacyDialog from '../Components/PrivacyDialog';
 
 import InfoIcon from '@material-ui/icons/Info';
 
@@ -136,6 +137,7 @@ const Auth = ({ }) => {
     const [tinderRefreshToken, setTinderRefreshToken] = useState(cookies.get('tinderRefreshToken') || null)
     const [spUser, setSpUser] = useState(null);
     const [error, setError] = useState(false);
+    const [privacyOpen, setPrivacyOpen] = useState(false);
 
     useEffect( () => {
         console.log(tinderAccessToken)
@@ -215,6 +217,10 @@ const Auth = ({ }) => {
         setTinderRefreshToken(null)
     }
 
+    const togglePrivacyDialog = () => {
+        setPrivacyOpen(!privacyOpen)
+    }
+
     return (
         <>
           <Layout>
@@ -280,14 +286,18 @@ const Auth = ({ }) => {
                   ''
                 }
                 </LogOutWrapper>
-                <PrivacyWrapper>
+                <PrivacyWrapper onClick={() => togglePrivacyDialog()}>
                 <InfoIcon />
-                <PrivacyText>
+                <PrivacyText >
                     <>Privacy Info</>
                 </PrivacyText>
                 </PrivacyWrapper>
             </VerticalCenter>
           </Layout>
+          <PrivacyDialog 
+            open={privacyOpen}
+            onClickAway={togglePrivacyDialog}
+          />
         </>
       )
     }
